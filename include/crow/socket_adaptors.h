@@ -17,10 +17,18 @@ namespace crow
         {
         }
 
+#if BOOST_VERSION < 107000
         boost::asio::io_service& get_io_service()
         {
             return socket_.get_io_service();
         }
+
+#else
+        boost::asio::io_context& get_io_service()
+        {
+            return (boost::asio::io_context&)socket_.get_executor().context();
+        }
+#endif
 
         tcp::socket& raw_socket()
         {
@@ -94,10 +102,18 @@ namespace crow
             raw_socket().close(ec);
         }
 
+#if BOOST_VERSION < 107000
         boost::asio::io_service& get_io_service()
         {
             return raw_socket().get_io_service();
         }
+#else
+        boost::asio::io_context& get_io_service()
+        {
+            return (boost::asio::io_context&)raw_socket().get_executor().context();
+        }
+#endif
+
 
         template <typename F> 
         void start(F f)

@@ -188,7 +188,7 @@ namespace crow
         void do_accept()
         {
             asio::io_service& is = pick_io_service();
-            auto p = new Connection<Adaptor, Handler, Middlewares...>(
+            auto p = std::make_shared<Connection<Adaptor, Handler, Middlewares...> >(
                 is, handler_, server_name_, middlewares_,
                 get_cached_date_str_pool_[roundrobin_index_], *timer_queue_pool_[roundrobin_index_],
                 adaptor_ctx_);
@@ -204,7 +204,7 @@ namespace crow
                     }
                     else
                     {
-                        delete p;
+                        //p = NULL;
                     }
                     do_accept();
                 });
